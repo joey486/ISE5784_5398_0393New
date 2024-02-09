@@ -1,6 +1,5 @@
 package primitives;
 
-import java.util.Objects;
 
 /**
  * The Point class represents a point in three-dimensional space.
