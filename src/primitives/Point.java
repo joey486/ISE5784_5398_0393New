@@ -27,7 +27,7 @@ public class Point {
     /**
      * Constructs a point from a Double3 object.
      *
-     * @param x The Double3 object representing the coordinates of the point.
+     * @param xyz The Double3 object representing the coordinates of the point.
      */
     public Point(Double3 xyz) {
         this.xyz = xyz;
