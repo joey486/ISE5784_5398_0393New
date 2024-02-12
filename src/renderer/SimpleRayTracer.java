@@ -19,7 +19,8 @@ import static primitives.Util.isZero;
  */
 public class SimpleRayTracer extends RayTracerBase {
     private static final double DELTA = 0.1;
-
+    private static final int MAX_CALC_COLOR_LEVEL = 10;
+    private static final double MIN_CALC_COLOR_K = 0.001;
     /**
      * Constructs a SimpleRayTracer with the specified scene.
      *
@@ -125,7 +126,7 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private boolean unshaded(GeoPoint gp , Vector l, Vector n, LightSource lightSource, double nl) {
         Vector lightDirection = l.scale(-1); // from point to light source
-        Vector epsVector = n.scale((nl < 0 ? DELTA : -DELTA));
+        Vector epsVector = n.scale((nl) < 0 ? DELTA : -DELTA);
         Point point = gp.point.add(epsVector);
         Ray ray = new Ray(point, lightDirection);
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray,lightSource.getDistance(point));
@@ -133,5 +134,12 @@ public class SimpleRayTracer extends RayTracerBase {
         if (intersections == null) return true;
 
         return false;
+    }
+
+    private Color calcColor(GeoPoint gp, Ray ray){
+        return calcColor(gp,ray,MAX_CALC_COLOR_LEVEL,MIN_CALC_COLOR_K).add(scene.ambientLight.getIntensity());
+    }
+    private Color calcColor(GeoPoint gp, Ray ray,int level,double k){
+        return null;
     }
 }

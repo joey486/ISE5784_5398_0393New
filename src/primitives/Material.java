@@ -15,6 +15,9 @@ public class Material {
     /** The shininess of the material. */
     public int nShininess = 0;
 
+    public Double3 kT = Double3.ZERO;
+    public Double3 kR = Double3.ZERO;
+
     /**
      * Sets the diffuse reflection coefficient.
      *
@@ -67,6 +70,24 @@ public class Material {
      */
     public Material setShininess(int nShininess) {
         this.nShininess = nShininess;
+        return this;
+    }
+    public Material setKt(Double3 kT){
+        this.kT = kT;
+        return this;
+    }
+
+    public Material setKr(Double3 kR){
+        this.kR = kR;
+        return this;
+    }
+    public Material setKt(Double kT){
+        this.kT = new Double3(kT);
+        return this;
+    }
+
+    public Material setKr(Double kR){
+        this.kR = new Double3(kR);
         return this;
     }
 }

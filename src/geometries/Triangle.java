@@ -40,11 +40,9 @@ protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) 
 
     if(pts == null) return null;
 
-    List<GeoPoint> geoPoints = List.of(new GeoPoint(this, pts.getFirst().point));
+    List<GeoPoint> geoPoint = List.of(new GeoPoint(this, pts.getFirst().point));
 
-    for (int i=1;i < pts.size(); i++){
-       geoPoints.add(new GeoPoint(this, pts.get(i).point));
-    }
+    double t = Math.abs(ray.getHead().distance(geoPoint.getFirst().point));
 
     GeoPoint p1 = new GeoPoint(this,vertices.get(0));
     GeoPoint p2 = new GeoPoint(this,vertices.get(1));
@@ -58,10 +56,11 @@ protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) 
     double proDot1 = alignZero(ray.getDirection().dotProduct(n1));
     double proDot2 = alignZero(ray.getDirection().dotProduct(n2));
     double proDot3 = alignZero(ray.getDirection().dotProduct(n3));
-    if (proDot3 < 0 && proDot1 < 0 && proDot2 < 0)
-        return geoPoints;
-    if (proDot3 > 0 && proDot1 > 0 && proDot2 > 0)
-        return geoPoints;
+
+    if (proDot3 < 0 && proDot1 < 0 && proDot2 < 0 && alignZero(t-maxDistance) <=0)
+        return geoPoint;
+    if (proDot3 > 0 && proDot1 > 0 && proDot2 > 0 &&  alignZero(t-maxDistance) <=0)
+        return geoPoint;
     return null;
     }
 }
