@@ -42,7 +42,7 @@ public class SimpleRayTracer extends RayTracerBase {
         List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
 
         // If there are no intersections, return the background color of the scene
-        if (intersections == null || intersections.isEmpty()) {
+        if (intersections == null) {
             return scene.background;
         }
 
@@ -129,7 +129,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Vector epsVector = n.scale((nl) < 0 ? DELTA : -DELTA);
         Point point = gp.point.add(epsVector);
         Ray ray = new Ray(point, lightDirection);
-        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray,lightSource.getDistance(point));
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, lightSource.getDistance(point));
 
         if (intersections == null) return true;
 

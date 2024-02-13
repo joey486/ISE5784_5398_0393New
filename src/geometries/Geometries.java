@@ -24,7 +24,7 @@ public class Geometries extends Intersectable{
         List<GeoPoint> intersections = null;
 
         for (int i = 0; i< geo.size();i++){
-            var GeoPoints = geo.get(i).findGeoIntersections(ray);
+            var GeoPoints = geo.get(i).findGeoIntersections(ray,maxDistance);
             if (GeoPoints != null){
                 if (intersections == null) intersections = new LinkedList<>(GeoPoints);
                 else intersections.addAll(GeoPoints);

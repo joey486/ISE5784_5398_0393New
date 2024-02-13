@@ -62,6 +62,7 @@ public class SpotLight extends PointLight {
 
     @Override
     public double getDistance(Point point) {
+
         return super.getDistance(point);
     }
 }
