@@ -225,4 +225,37 @@ public class LightsTests {
                 .renderImage()
                 .writeToImage();
     }
+
+    @Test
+    public void testScene1() {
+        var spotLight = new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+                .setKl(0.001).setKq(0.0001);
+        var pointLight = new PointLight(trianglesLightColor, trianglesLightPosition)
+                .setKl(0.001).setKq(0.002);
+        var directionalLight = new DirectionalLight(trianglesLightColor, trianglesLightDirection);
+        scene2.geometries.add(sphere);
+        scene2.lights.add(spotLight);
+        scene2.lights.add(pointLight);
+        scene2.lights.add(directionalLight);
+
+        camera2.setImageWriter(new ImageWriter("testScene1", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
+    @Test
+    public void testScene2() {
+        scene2.geometries.add(triangle1, triangle2);
+        scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+                .setKl(0.001).setKq(0.0001));
+        scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
+        scene2.lights.add(new PointLight(trianglesLightColor, trianglesLightPosition)
+                .setKl(0.001).setKq(0.002));
+
+        camera2.setImageWriter(new ImageWriter("testScene2", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
 }

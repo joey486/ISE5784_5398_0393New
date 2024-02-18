@@ -60,9 +60,14 @@ public class SpotLight extends PointLight {
         return p.subtract(this.position).normalize();
     }
 
+    /**
+     * Calculates the distance from the specified point to the light source.
+     *
+     * @param point the point from which to determine the direction
+     * @return the direction vector from the point to the light source
+     */
     @Override
     public double getDistance(Point point) {
-
         return super.getDistance(point);
     }
 }
