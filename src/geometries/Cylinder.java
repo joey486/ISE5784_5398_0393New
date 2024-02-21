@@ -9,19 +9,19 @@ import java.util.List;
 /**
  * The Cylinder class represents a cylinder in three-dimensional space. A cylinder is defined by its height.
  */
-public class Cylinder extends Geometry{
+public class Cylinder extends Tube{
     /**
      * The height of the cylinder.
      */
     double height;
 
-    @Override
-    public Vector getNormal(Point point) {
-        return null;
-    }
-
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
-        return null;
+    /**
+     * tube constructor based on radius and direction.
+     *
+     * @param radius radius of the cylinder
+     * @param ray    a ray that describes the orientation of the cylinder
+     */
+    public Cylinder(float radius, Ray ray) {
+        super(radius, ray);
     }
 }

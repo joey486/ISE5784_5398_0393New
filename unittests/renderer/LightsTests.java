@@ -10,6 +10,9 @@ import primitives.*;
 import renderer.*;
 import scene.Scene;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Test rendering a basic image
  *
@@ -227,35 +230,92 @@ public class LightsTests {
     }
 
     @Test
-    public void testScene1() {
-        var spotLight = new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
-                .setKl(0.001).setKq(0.0001);
-        var pointLight = new PointLight(trianglesLightColor, trianglesLightPosition)
-                .setKl(0.001).setKq(0.002);
-        var directionalLight = new DirectionalLight(trianglesLightColor, trianglesLightDirection);
-        scene2.geometries.add(sphere);
-        scene2.lights.add(spotLight);
-        scene2.lights.add(pointLight);
-        scene2.lights.add(directionalLight);
-
-        camera2.setImageWriter(new ImageWriter("testScene1", 500, 500))
-                .build()
-                .renderImage()
-                .writeToImage();
+   public void testScene1() {
+//        var spotLight = new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+//                .setKl(0.001).setKq(0.0001);
+//        var pointLight = new PointLight(trianglesLightColor, trianglesLightPosition)
+//                .setKl(0.001).setKq(0.002);
+//        var directionalLight = new DirectionalLight(trianglesLightColor, trianglesLightDirection);
+//        List<Geometry> list = CubeCreator();
+//        for(Geometry i: list) scene2.geometries.add(i.setMaterial(material).setEmission(new Color(red)));
+//        scene2.lights.add(spotLight);
+//        scene2.lights.add(pointLight);
+//        scene2.lights.add(directionalLight);
+//
+//        camera2.setImageWriter(new ImageWriter("testScene1", 500, 500))
+//                .build()
+//                .renderImage()
+//                .writeToImage();
     }
 
     @Test
     public void testScene2() {
-        scene2.geometries.add(triangle1, triangle2);
-        scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+        Geometry sphere1 = new Sphere(20,new Point(-50, -50, 25)).setMaterial(material).setEmission(new Color(5,5,0));
+        Geometry sphere2 = new Sphere(10,new Point(0, -50, 25)).setMaterial(material).setEmission(new Color(70,0,12));
+        scene2.geometries.add(triangle1, triangle2,sphere1,sphere2);
+        scene2.lights.add(new PointLight(new Color(blue), trianglesLightPosition)
+                .setKl(0.001).setKq(0.0002));
+        scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition.subtract(vertices[0]), trianglesLightDirection.normalize())
                 .setKl(0.001).setKq(0.0001));
-        scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
-        scene2.lights.add(new PointLight(trianglesLightColor, trianglesLightPosition)
+        scene2.lights.add(new PointLight(new Color(255,0,160).scale(10), new Point(-50, 40, 25))
                 .setKl(0.001).setKq(0.002));
 
-        camera2.setImageWriter(new ImageWriter("testScene2", 500, 500))
-                .build()
-                .renderImage()
-                .writeToImage();
+        camera2.setImageWriter(new ImageWriter("testScene2", 500, 500)) //
+                .build() //
+                .renderImage() //
+                .writeToImage(); //
+    }
+
+    public final Point[] pointsOfCube = {
+            new Point(-55, -55, -75),
+            new Point(47.5, 50, -75),
+            new Point(50, -55, -75),
+            new Point(-37.5, 39, 25),
+            new Point(-45, -55, -75),
+            new Point(57.5, 50, -75),
+            new Point(65, -55, -75),
+            new Point(-27.5, 39, 25)
+    };
+
+
+
+    public List<Geometry> CubeCreator (){
+            List<Geometry> cubeTriangles = new LinkedList<>();
+
+            // Define the vertices of the cube
+            Point A = pointsOfCube[0];
+            Point B = pointsOfCube[1];
+            Point C = pointsOfCube[2];
+            Point D = pointsOfCube[3];
+            Point E = pointsOfCube[4];
+            Point F = pointsOfCube[5];
+            Point G = pointsOfCube[6];
+            Point H = pointsOfCube[7];
+
+            // Front face
+            cubeTriangles.add(new Triangle(A, B, C));
+            cubeTriangles.add(new Triangle(A, C, G));
+
+            // Back face
+            cubeTriangles.add(new Triangle(E, F, H));
+            cubeTriangles.add(new Triangle(E, H, D));
+
+            // Top face
+            cubeTriangles.add(new Triangle(A, G, H));
+            cubeTriangles.add(new Triangle(A, H, E));
+
+            // Bottom face
+            cubeTriangles.add(new Triangle(B, D, F));
+            cubeTriangles.add(new Triangle(B, F, C));
+
+            // Right face
+            cubeTriangles.add(new Triangle(C, F, G));
+            cubeTriangles.add(new Triangle(C, B, F));
+
+            // Left face
+            cubeTriangles.add(new Triangle(A, E, D));
+            cubeTriangles.add(new Triangle(A, D, B));
+
+            return cubeTriangles;
     }
 }
