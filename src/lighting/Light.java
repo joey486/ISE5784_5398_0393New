@@ -1,6 +1,7 @@
 package lighting;
 
 import primitives.Color;
+import renderer.Blackboard;
 
 /**
  * The abstract class Light represents a generic light source.
@@ -26,4 +27,6 @@ abstract class Light {
     public Color getIntensity() {
         return this.intensity;
     }
+
+
 }

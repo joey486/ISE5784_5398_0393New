@@ -23,11 +23,18 @@ public class finaltests {
     /**
      * Second camera builder for some of tests
      */
-    private final Camera.Builder camera = Camera.getBuilder()
+    private final Camera.Builder camera1 = Camera.getBuilder()
             .setRayTracer(new SimpleRayTracer(scene))
             .setLocation(new Point(700, 0, 100))
             .setDirection(new Vector(-1, 0, 0), new Vector(0, 0, 1))
             .setVpSize(200, 200).setVpDistance(100);
+
+    private final Camera.Builder camera2 = Camera.getBuilder()
+            .setRayTracer(new SimpleRayTracer(scene))
+            .setLocation(new Point(700, 0, 100))
+            .setDirection(new Vector(-1, 0, 0), new Vector(0, 0, 1))
+            .setVpSize(200, 200).setVpDistance(100)
+            .rotate(120);
 
     /**
      * Shininess value for most of the geometries in the tests
@@ -78,24 +85,24 @@ public class finaltests {
 
         //set lights
         scene.background = new Color(cyan);
-        scene.lights.add(new PointLight(new Color(yellow),sunPosition.subtract(new Point(-100,0,0))));
+        scene.lights.add(new PointLight(new Color(white.darker()),sunPosition));
 
         //set background
         Geometry ground = new Plane(new Point(0,0,0),new Vector(0,0,1))
                 .setEmission(new Color(green)).setMaterial(new Material().setShininess(SHININESS).setKd(KD).setKs(KS));
         Geometry sun = new Sphere(50,sunPosition)
-                .setEmission(new Color(yellow)).setMaterial(new Material());
+                .setEmission(new Color(yellow.brighter())).setMaterial(new Material().setKt(0.9));
         scene.geometries.add(ground,sun);
 
         //set walls
         Geometry t1 = new Triangle(p1,p2,p3)
-                .setEmission(new Color(magenta).reduce(4)).setMaterial(new Material().setKt(0d));
+                .setEmission(new Color(magenta).reduce(4)).setMaterial(new Material().setKt(0.6d));
         Geometry t2 = new Triangle(p4,p1.subtract(new Point(0,DELTA,0)),p3)
-                .setEmission(new Color(magenta).reduce(4)).setMaterial(new Material());
+                .setEmission(new Color(magenta).reduce(4)).setMaterial(new Material().setKt(0.6d));
         Geometry t3 = new Triangle(p1,p4,p5)
-                .setEmission(new Color(magenta).reduce(3)).setMaterial(new Material());
+                .setEmission(new Color(magenta).reduce(3)).setMaterial(new Material().setKt(0.6d));
         Geometry t4 = new Triangle(p6,p4,p5.subtract(new Point(0,DELTA,0)))
-                .setEmission(new Color(magenta).reduce(3)).setMaterial(new Material());
+                .setEmission(new Color(magenta).reduce(3)).setMaterial(new Material().setKt(0.6d));
         scene.geometries.add(t1,t2,t3,t4);
         //set roof
         Geometry r1 = new Triangle(p4,p6,p7)
@@ -132,10 +139,15 @@ public class finaltests {
         scene.geometries.add(w1,w2);
 
         //finish
-        camera.setImageWriter(new ImageWriter("homeScene", 500, 500)) //
+        camera1.setImageWriter(new ImageWriter("homeScene1", 500, 500)) //
         .build()
         .renderImage()
         .writeToImage();
+
+        camera2.setImageWriter(new ImageWriter("homeScene2", 500, 500)) //
+                .build()
+                .renderImage()
+                .writeToImage();
     }
 
 

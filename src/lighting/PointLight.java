@@ -3,11 +3,14 @@ package lighting;
 import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
+import renderer.Blackboard;
 
 /**
  * Represents a point light source that illuminates objects from a specific position.
  */
 public class PointLight extends Light implements LightSource {
+
+    public Blackboard blackboard;
 
     /** The position of the point light source. */
     protected Point position;
@@ -21,6 +24,10 @@ public class PointLight extends Light implements LightSource {
     /** The quadratic attenuation factor. */
     private double kQ = 0;
 
+    public Point getPosition() {
+        return position;
+    }
+
     /**
      * Constructs a new point light with the specified intensity.
      *
@@ -29,6 +36,10 @@ public class PointLight extends Light implements LightSource {
     public PointLight(Color intensity,Point position) {
         super(intensity);
         this.position = position;
+        blackboard = new Blackboard(0,0,0);
+        blackboard.setWidth(4);
+        blackboard.setHeight(4);
+        blackboard.setK(9);
     }
 
 

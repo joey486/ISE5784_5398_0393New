@@ -3,6 +3,7 @@ package lighting;
 import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
+import renderer.Blackboard;
 
 /**
  * Represents a spot light source that illuminates objects from a specific position
@@ -21,6 +22,10 @@ public class SpotLight extends PointLight {
     public SpotLight(Color intensity,Point position,Vector direction) {
         super(intensity,position);
         this.direction = direction.normalize();
+        blackboard = new Blackboard(0,0,0);
+        blackboard.setWidth(4);
+        blackboard.setHeight(4);
+        blackboard.setK(9);
     }
 
     @Override

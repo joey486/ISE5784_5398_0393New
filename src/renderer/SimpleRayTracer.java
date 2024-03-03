@@ -3,13 +3,17 @@ package renderer;
 import geometries.FlatGeometry;
 import geometries.Intersectable.GeoPoint;
 import geometries.Triangle;
+import lighting.DirectionalLight;
 import lighting.LightSource;
+import lighting.PointLight;
 import primitives.*;
 import scene.Scene;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -21,6 +25,7 @@ public class SimpleRayTracer extends RayTracerBase {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final Double3 INITIAL_K = Double3.ONE;
+    boolean useSoftShadows = true;
 
     /**
      * Constructs a SimpleRayTracer with the specified scene.
@@ -131,20 +136,79 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Double3 transparency(GeoPoint gp, LightSource light, Vector l, Vector n) {
         Vector lightDirection = l.scale(-1); // from point to light source
-        Ray ray = new Ray(gp.point, lightDirection, n);
-        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, light.getDistance(gp.point));
 
-        if (intersections == null) return Double3.ONE;
+        if(light instanceof DirectionalLight || !useSoftShadows) {
+            Ray ray = new Ray(gp.point, lightDirection, n);
+            List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, light.getDistance(gp.point));
 
-        Double3 ktr = Double3.ONE;
+            if (intersections == null) return Double3.ONE;
 
-        for (GeoPoint point : intersections) {
-            ktr =ktr.product(point.geometry.getMaterial().kT);
-            if (ktr.equals(Double3.ZERO)) break;
+            Double3 ktr = Double3.ONE;
+
+            for (GeoPoint point : intersections) {
+                ktr = ktr.product(point.geometry.getMaterial().kT);
+                if (ktr.equals(Double3.ZERO)) break;
+            }
+
+            return ktr;
         }
 
-        return ktr;
+        else{
+            Vector vUp;
+            Vector vTo;
+            if(lightDirection.equals(new Vector(1,0,0)) || lightDirection.equals(new Vector(-1,0,0)))
+                vUp = lightDirection.crossProduct(new Vector(0,0,1));
+            else vUp = lightDirection.crossProduct(new Vector(1,0,0));
+            vTo = lightDirection.crossProduct(vUp);
+
+//            List<Ray> rayList = new LinkedList<>();
+            Double3 ktr = Double3.ZERO;
+
+            PointLight PosLight = (PointLight) light;
+
+            PointLight pl = (PointLight) light;
+            pl.blackboard.setGrid(PosLight.getPosition(),vUp,vTo);
+
+            Ray r = new Ray(gp.point, lightDirection, n);
+            List<GeoPoint> intersections = scene.geometries.findGeoIntersections(r, light.getDistance(gp.point));
+
+            if (intersections == null) ktr = ktr.add(Double3.ONE);
+
+            else {
+                Double3 ktr_temp = Double3.ONE;
+
+                for (GeoPoint point : intersections) {
+                    ktr_temp = ktr_temp.product(point.geometry.getMaterial().kT);
+                    if (ktr_temp.equals(Double3.ZERO)) break;
+                }
+                ktr = ktr.add(ktr_temp);
+            }
+
+            for(Point i : pl.blackboard.grid){
+
+                //Vector vector = i.subtract(gp.point);
+
+                Ray ray = new Ray(gp.point,i.subtract(gp.point),n);
+
+                intersections = scene.geometries.findGeoIntersections(ray, light.getDistance(gp.point));
+
+                if (intersections == null) ktr = ktr.add(Double3.ONE);
+
+                else {
+
+                    Double3 ktr_temp = Double3.ONE;
+
+                    for (GeoPoint point : intersections) {
+                        ktr_temp = ktr_temp.product(point.geometry.getMaterial().kT);
+                        if (ktr_temp.equals(Double3.ZERO)) break;
+                    }
+                    ktr = ktr.add(ktr_temp);
+                }
+            }
+            return ktr.scale((double) 1/(pl.blackboard.grid.size()+1));
+        }
     }
+
     /**
      * Calculates the global effects (reflection and refraction) for a pixel at the specified point.
      *

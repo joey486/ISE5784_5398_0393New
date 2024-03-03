@@ -1,15 +1,15 @@
 package renderer;
 
 import geometries.Intersectable.GeoPoint;
+import primitives.*;
 import primitives.Color;
 import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
 import scene.Scene;
 
 import java.awt.*;
 import java.util.MissingResourceException;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -27,7 +27,7 @@ public class Camera implements Cloneable {
     private double distance = 0.0; // Distance from the camera to the view plane
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
-
+    boolean useSoftShadows = true;
     /**
      * Private constructor for Camera.
      * Initializes the camera with default values.
@@ -170,6 +170,54 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        public Builder setUseSoftShadows(boolean useSoftShadows){
+            this.camera.useSoftShadows = useSoftShadows;
+            return this;
+        }
+
+        /**
+         * Rotates the camera around its viewing axis by the specified angle in degrees.
+         * Positive angles rotate counter-clockwise, and negative angles rotate clockwise.
+         *
+         * @param degrees the angle of rotation in degrees
+         * @return the Builder instance for method chaining
+         */
+        public Builder rotate(double degrees) {
+            // Convert degrees to radians for trigonometric functions
+            double radians = alignZero(Math.toRadians(360 - degrees));
+
+            // Calculate the cosine and sine of the angle
+            double cosin = alignZero(Math.cos(radians));
+            double sinus = alignZero(Math.sin(radians));
+
+            // Initialize a temporary vector
+            Vector v = null;
+
+            // If cosine is not approximately zero, scale the camera's upward vector by cosine
+            if (!isZero(cosin))
+                v = camera.vUp.scale(cosin);
+
+            // If sine is not approximately zero
+            if (!isZero(sinus)) {
+                // If cosine is not approximately zero, perform a vector addition and scaling
+                if (!isZero(cosin))
+                    v = v.add(camera.vTo.crossProduct(camera.vUp).scale(sinus));
+                else
+                    // If cosine is approximately zero, perform a cross product and scaling
+                    v = camera.vTo.crossProduct(camera.vUp).scale(sinus);
+            }
+
+            // Update the camera's upward vector
+            camera.vUp = v;
+
+            // Update the camera's rightward vector (cross product of view direction and upward vector)
+            camera.vRight = camera.vTo.crossProduct(camera.vUp);
+
+            // Return the Builder instance for method chaining
+            return this;
+        }
+
+
         /**
          * Build the Camera instance.
          *
@@ -290,4 +338,5 @@ public class Camera implements Cloneable {
         imageWriter.writePixel(j, i,
                 rayTracer.traceRay(ray));
     }
+
 }
