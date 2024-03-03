@@ -31,5 +31,5 @@ public abstract class RayTracerBase {
      * @param ray The ray to be traced through the scene.
      * @return The Color representing the calculated color of the pixel.
      */
-    abstract public Color traceRay(Ray ray);
+    abstract public Color traceRay(Ray ray,boolean useSoftShadows);
 }

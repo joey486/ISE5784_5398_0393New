@@ -336,7 +336,7 @@ public class Camera implements Cloneable {
     private void castRay(int nX, int nY, int j, int i) {
         Ray ray = constructRay(nX, nY, j, i);
         imageWriter.writePixel(j, i,
-                rayTracer.traceRay(ray));
+                rayTracer.traceRay(ray,useSoftShadows));
     }
 
 }

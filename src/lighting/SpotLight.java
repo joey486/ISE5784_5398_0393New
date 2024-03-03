@@ -27,6 +27,14 @@ public class SpotLight extends PointLight {
         blackboard.setHeight(4);
         blackboard.setK(9);
     }
+    public SpotLight(Color intensity,Point position,Vector direction,double width,double height,double k) {
+        super(intensity,position);
+        this.direction = direction.normalize();
+        blackboard = new Blackboard(0,0,0);
+        blackboard.setWidth(width);
+        blackboard.setHeight(height);
+        blackboard.setK(k);
+    }
 
     @Override
     public SpotLight setkC(double kC) {

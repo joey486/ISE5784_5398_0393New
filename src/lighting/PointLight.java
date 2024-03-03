@@ -42,6 +42,15 @@ public class PointLight extends Light implements LightSource {
         blackboard.setK(9);
     }
 
+    public PointLight(Color intensity,Point position,double width,double height,double k) {
+        super(intensity);
+        this.position = position;
+        blackboard = new Blackboard(0,0,0);
+        blackboard.setWidth(width);
+        blackboard.setHeight(height);
+        blackboard.setK(k);
+    }
+
 
     /**
      * Sets the quadratic attenuation factor.
